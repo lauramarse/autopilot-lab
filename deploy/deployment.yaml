@@ -1,0 +1,41 @@
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: hello-world-gke
+  spec:
+    replicas:   1
+    selector:
+      matchLabels:
+        app: hello
+    template:
+      metadata:
+        labels:
+          app: hello  
+      
+      spec:
+        containers:
+        - name: hello-world-gke
+          image: europe-west1-docker.pkg.dev/lauramarse-gke/lauramarse-gke/hello-app
+          resources:
+            limits:
+              cpu: 200m
+            requests:
+              cpu: 10m  
+          ports:
+          - containerPort: 8080
+          env:
+            - name: PORT  
+              value: "8080"
+---
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: hello
+  spec:
+    type: LoadBalancer
+    selector:
+      app: hello
+    ports:
+    - port: 80
+      targetPort: 8080
+    
